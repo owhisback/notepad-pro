@@ -152,9 +152,9 @@ class NotesManager {
     const nb = this.notebooks.find(n => n.id === id);
     const noteCount = this.notes.filter(n => n.notebook === id).length;
     const msg = noteCount > 0
-      ? `"${nb?.name}" defterini ve içindeki ${noteCount} notu silmek istiyor musunuz?`
-      : `"${nb?.name}" defterini silmek istiyor musunuz?`;
-    if (!confirm(msg)) return;
+      ? `Bu defteri ve içindeki ${noteCount} notu silmek istediğinize emin misiniz?`
+      : 'Bu defteri silmek istediğinize emin misiniz?';
+    if (!await showConfirm(msg, nb?.name)) return;
 
     // Delete notes in the notebook too
     this.notes = this.notes.filter(n => n.notebook !== id);
@@ -251,12 +251,12 @@ class NotesManager {
       return `
         <div class="page-item ${isActive ? 'active' : ''}" data-page-id="${note.id}">
           <div class="page-item-row">
-            <div class="page-item-title">${note.title}</div>
+            <div class="page-item-title">${escapeHtml(note.title)}</div>
             <button class="page-item-delete" data-delete-note="${note.id}" title="Sil">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
-          ${preview ? `<div class="page-item-preview">${preview}</div>` : ''}
+          ${preview ? `<div class="page-item-preview">${escapeHtml(preview)}</div>` : ''}
           <div class="page-item-meta">
             <span class="page-item-date">${date}</span>
           </div>
@@ -280,7 +280,7 @@ class NotesManager {
         e.stopPropagation();
         const noteId = el.dataset.deleteNote;
         const note = this.getById(noteId);
-        if (!confirm(`"${note?.title}" notunu silmek istiyor musunuz?`)) return;
+        if (!await showConfirm('Bu notu silmek istediğinize emin misiniz?', note?.title)) return;
 
         // Close tab if open
         const openTab = window.tabManager?.tabs.find(t => t.noteId === noteId);

@@ -118,8 +118,8 @@ class TaskManager {
       <div class="task-card ${doneClass}" data-task-id="${task.id}">
         <div class="task-checkbox ${checkClass}" data-task-toggle="${task.id}"></div>
         <div class="task-content" data-task-open="${task.id}">
-          <div class="task-title">${task.title}</div>
-          ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+          <div class="task-title">${escapeHtml(task.title)}</div>
+          ${task.description ? `<div class="task-description">${escapeHtml(task.description)}</div>` : ''}
           <div class="task-meta">
             ${task.customerId ? window.tagSystem.renderCustomerTag(task.customerId) : ''}
             ${task.priority ? `<span class="task-meta-item"><span class="priority-dot ${task.priority}"></span> ${window.i18n.t(task.priority)}</span>` : ''}
@@ -182,8 +182,8 @@ class TaskManager {
     container.querySelectorAll('[data-task-delete]').forEach(el => {
       el.addEventListener('click', async (e) => {
         e.stopPropagation();
-        // Also delete associated attachments
         const task = this.tasks.find(t => t.id === el.dataset.taskDelete);
+        if (!await showConfirm('Bu görevi silmek istediğinize emin misiniz?', task?.title)) return;
         if (task?.attachments) {
           for (const att of task.attachments) {
             await window.api.deleteAttachment(att.path);
@@ -235,7 +235,7 @@ class TaskManager {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             Geri
           </button>
-          <h2 class="task-detail-title">${task.title}</h2>
+          <h2 class="task-detail-title">${escapeHtml(task.title)}</h2>
           <div class="task-detail-actions">
             <button class="btn-secondary" id="btn-detail-edit">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -253,7 +253,7 @@ class TaskManager {
           ${task.dueDate ? `<span class="task-meta-item">📅 ${this.formatDate(task.dueDate)}</span>` : ''}
         </div>
 
-        ${task.description ? `<div class="task-detail-desc">${task.description}</div>` : ''}
+        ${task.description ? `<div class="task-detail-desc">${escapeHtml(task.description)}</div>` : ''}
 
         <!-- Two columns: Notes + Sidebar -->
         <div class="task-detail-body">
@@ -411,11 +411,11 @@ class TaskManager {
       <div class="modal-body">
         <div class="form-group">
           <label>${window.i18n.t('task_title')}</label>
-          <input type="text" id="task-input-title" value="${existing?.title || ''}" placeholder="${window.i18n.t('task_title')}">
+          <input type="text" id="task-input-title" value="${escapeHtml(existing?.title || '')}" placeholder="${window.i18n.t('task_title')}">
         </div>
         <div class="form-group">
           <label>${window.i18n.t('task_desc')}</label>
-          <textarea class="input-lg" id="task-input-desc" placeholder="${window.i18n.t('task_desc')}">${existing?.description || ''}</textarea>
+          <textarea class="input-lg" id="task-input-desc" placeholder="${window.i18n.t('task_desc')}">${escapeHtml(existing?.description || '')}</textarea>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -447,7 +447,7 @@ class TaskManager {
             ${(existing?.checklist || []).map((item, idx) => `
               <div class="checklist-item" style="margin-bottom:4px">
                 <input type="checkbox" ${item.done ? 'checked' : ''} class="check-done" data-idx="${idx}">
-                <input type="text" class="input-sm check-text" value="${item.text}" style="flex:1">
+                <input type="text" class="input-sm check-text" value="${escapeHtml(item.text)}" style="flex:1">
                 <button class="icon-btn check-remove" data-idx="${idx}">✕</button>
               </div>
             `).join('')}

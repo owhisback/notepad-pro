@@ -124,7 +124,7 @@ class DashboardManager {
                 return `
                   <div class="dash-task-item ${overdue ? 'overdue' : ''}" data-goto-task="${t.id}">
                     <span class="dash-task-status status-${t.status}"></span>
-                    <span class="dash-task-title">${t.title}</span>
+                    <span class="dash-task-title">${escapeHtml(t.title)}</span>
                     ${t.dueDate ? `<span class="dash-task-due ${overdue ? 'overdue' : isToday ? 'today' : ''}">${this.formatDate(t.dueDate)}</span>` : ''}
                   </div>
                 `;
@@ -143,7 +143,7 @@ class DashboardManager {
               upcomingReminders.map(r => `
                 <div class="dash-reminder-item">
                   <span class="dash-reminder-time">${this.formatTime(r.nextDue || r.dueDate)}</span>
-                  <span class="dash-reminder-title">${r.title}</span>
+                  <span class="dash-reminder-title">${escapeHtml(r.title)}</span>
                 </div>
               `).join('')}
           </div>
@@ -162,8 +162,8 @@ class DashboardManager {
                 return `
                   <div class="dash-lead-item">
                     <span class="status-badge ${l.status}">${statusLabels[l.status] || l.status}</span>
-                    <span class="dash-lead-route">${l.origin || '?'} → ${l.destination || '?'}</span>
-                    ${customerName ? `<span class="dash-lead-customer">${customerName}</span>` : ''}
+                    <span class="dash-lead-route">${escapeHtml(l.origin || '?')} → ${escapeHtml(l.destination || '?')}</span>
+                    ${customerName ? `<span class="dash-lead-customer">${escapeHtml(customerName)}</span>` : ''}
                   </div>
                 `;
               }).join('')}

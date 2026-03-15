@@ -204,6 +204,53 @@ textarea.input-lg:focus {
   border-top: 1px solid var(--border-primary);
 }
 
+/* ── Confirm Dialog ── */
+.confirm-dialog-body {
+  padding: 28px 24px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.confirm-dialog-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(225, 112, 85, 0.12);
+  color: var(--accent-danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+  flex-shrink: 0;
+}
+
+.confirm-dialog-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.confirm-dialog-message {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  justify-content: center;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;

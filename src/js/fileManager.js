@@ -33,7 +33,8 @@ class FileManager {
   async openFile() {
     const result = await window.api.openFile();
     if (!result) return;
-    
+    if (result.error) { showToast(result.error, 'error'); return; }
+
     // Check if already open
     const existing = window.tabManager.getTabByFilePath(result.filePath);
     if (existing) {
@@ -154,3 +155,45 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 window.escapeHtml = escapeHtml;
+
+// Custom confirm dialog — replaces native confirm() with app-styled modal
+function showConfirm(message, itemName = null) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal-container');
+    const prevMax = modal.style.maxWidth;
+    modal.style.maxWidth = '360px';
+
+    modal.innerHTML = `
+      <div class="confirm-dialog-body">
+        <div class="confirm-dialog-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+            <path d="M10 11v6"/><path d="M14 11v6"/>
+            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+          </svg>
+        </div>
+        ${itemName ? `<div class="confirm-dialog-name">${escapeHtml(itemName)}</div>` : ''}
+        <p class="confirm-dialog-message">${message}</p>
+        <div class="confirm-dialog-actions">
+          <button class="btn-secondary" id="confirm-cancel-btn">İptal</button>
+          <button class="btn-danger" id="confirm-ok-btn">Sil</button>
+        </div>
+      </div>
+    `;
+
+    overlay.classList.remove('hidden');
+
+    const close = (result) => {
+      overlay.classList.add('hidden');
+      modal.style.maxWidth = prevMax;
+      resolve(result);
+    };
+
+    document.getElementById('confirm-cancel-btn').addEventListener('click', () => close(false));
+    document.getElementById('confirm-ok-btn').addEventListener('click', () => close(true));
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(false); }, { once: true });
+  });
+}
+window.showConfirm = showConfirm;

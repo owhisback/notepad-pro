@@ -11,18 +11,35 @@ class EditorManager {
   }
 
   async init(settings) {
-    await this.loadMonaco();
-    this.createEditor(settings);
+    try {
+      await this.loadMonaco();
+      this.createEditor(settings);
+    } catch (err) {
+      const container = document.getElementById('editor-container');
+      container.innerHTML = `
+        <div class="editor-load-error">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <p>Editör yüklenemedi.</p>
+          <small>node_modules klasörünün mevcut olduğundan emin olun: <code>npm install</code></small>
+        </div>
+      `;
+    }
   }
 
   loadMonaco() {
-    return new Promise((resolve) => {
+    // Load Monaco from local node_modules (offline-safe)
+    const monacoBase = '../node_modules/monaco-editor/min/vs';
+
+    return new Promise((resolve, reject) => {
       if (this.monacoLoaded) { resolve(); return; }
-      
+
       const loaderScript = document.createElement('script');
-      loaderScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
+      loaderScript.src = monacoBase + '/loader.js';
+      loaderScript.onerror = () => reject(new Error('Monaco loader bulunamadı. npm install çalıştırın.'));
       loaderScript.onload = () => {
-        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+        require.config({ paths: { vs: monacoBase } });
         require(['vs/editor/editor.main'], () => {
           this.monacoLoaded = true;
 
@@ -328,7 +345,6 @@ class EditorManager {
 
     // Save values BEFORE hidePopup/executeEdits (edits trigger content change → hidePopup)
     const anchor = { ...this.popupAnchor };
-    const mode = this.popupMode;
 
     // Hide popup first to prevent re-entry
     this.hidePopup();

@@ -77,7 +77,7 @@ class ReminderManager {
             ${reminder.repeat && reminder.repeat !== 'none' ? '🔄' : '🔔'}
           </div>
           <div class="reminder-content">
-            <div class="reminder-title">${reminder.title}</div>
+            <div class="reminder-title">${escapeHtml(reminder.title)}</div>
             <div class="reminder-time ${isOverdue ? 'overdue' : ''}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               <span>${this.formatDateTime(dueDate)}</span>
@@ -135,6 +135,8 @@ class ReminderManager {
     container.querySelectorAll('[data-reminder-delete]').forEach(el => {
       el.addEventListener('click', async (e) => {
         e.stopPropagation();
+        const reminder = this.reminders.find(r => r.id === el.dataset.reminderDelete);
+        if (!await showConfirm('Bu hatırlatıcıyı silmek istediğinize emin misiniz?', reminder?.title)) return;
         this.reminders = this.reminders.filter(r => r.id !== el.dataset.reminderDelete);
         await this.saveReminders();
         this.render();
@@ -252,7 +254,7 @@ class ReminderManager {
       <div class="reminder-popup-header">
         <span>🔔 ${window.i18n.t('reminders')}</span>
       </div>
-      <div class="reminder-popup-title">${reminder.title}</div>
+      <div class="reminder-popup-title">${escapeHtml(reminder.title)}</div>
       <div class="reminder-popup-actions">
         <button class="btn-primary popup-done">${window.i18n.t('mark_done')}</button>
         <button class="btn-secondary popup-snooze-5">${window.i18n.t('snooze_5m')}</button>
@@ -319,7 +321,7 @@ class ReminderManager {
       <div class="modal-body">
         <div class="form-group">
           <label>${window.i18n.t('reminder_title')}</label>
-          <input type="text" id="rem-input-title" value="${existing?.title || ''}" placeholder="${window.i18n.t('reminder_title')}">
+          <input type="text" id="rem-input-title" value="${escapeHtml(existing?.title || '')}" placeholder="${window.i18n.t('reminder_title')}">
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -348,7 +350,7 @@ class ReminderManager {
         </div>
         <div class="form-group">
           <label>${window.i18n.t('notes')}</label>
-          <textarea class="input-lg" id="rem-input-notes" placeholder="${window.i18n.t('notes')}">${existing?.notes || ''}</textarea>
+          <textarea class="input-lg" id="rem-input-notes" placeholder="${window.i18n.t('notes')}">${escapeHtml(existing?.notes || '')}</textarea>
         </div>
       </div>
       <div class="modal-footer">

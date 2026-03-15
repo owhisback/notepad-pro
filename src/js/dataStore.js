@@ -8,9 +8,9 @@ class DataStore {
   }
 
   async load(fileName, defaultValue = null) {
-    if (this.cache[fileName]) return this.cache[fileName];
+    if (this.cache[fileName] !== undefined) return this.cache[fileName];
     const data = await window.api.dataRead(fileName);
-    this.cache[fileName] = data || defaultValue;
+    this.cache[fileName] = data !== null ? data : defaultValue;
     return this.cache[fileName];
   }
 
@@ -66,7 +66,7 @@ class DataStore {
 
   // Generate unique ID
   generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 7);
   }
 }
 

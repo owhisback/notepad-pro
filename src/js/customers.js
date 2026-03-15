@@ -56,10 +56,10 @@ class CustomerManager {
       return `
         <div class="customer-card" data-customer-id="${customer.id}">
           <div class="customer-card-compact">
-            <div class="customer-avatar">${initials}</div>
+            <div class="customer-avatar">${escapeHtml(initials)}</div>
             <div class="customer-info">
-              <h3>${customer.name}</h3>
-              <p>${customer.contact || ''}</p>
+              <h3>${escapeHtml(customer.name)}</h3>
+              <p>${escapeHtml(customer.contact || '')}</p>
             </div>
             <div class="customer-mini-stats">
               <span title="Görev">✅${taskCount}</span>
@@ -71,12 +71,12 @@ class CustomerManager {
               ${customer.email ? `
                 <div class="customer-contact-item">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                  <span>${customer.email}</span>
+                  <span>${escapeHtml(customer.email)}</span>
                 </div>` : ''}
               ${customer.phone ? `
                 <div class="customer-contact-item">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/></svg>
-                  <span>${customer.phone}</span>
+                  <span>${escapeHtml(customer.phone)}</span>
                 </div>` : ''}
             </div>
             <div class="customer-stats">
@@ -129,6 +129,8 @@ class CustomerManager {
     container.querySelectorAll('[data-customer-delete]').forEach(el => {
       el.addEventListener('click', async (e) => {
         e.stopPropagation();
+        const customer = this.customers.find(c => c.id === el.dataset.customerDelete);
+        if (!await showConfirm('Bu müşteriyi silmek istediğinize emin misiniz?', customer?.name)) return;
         this.customers = this.customers.filter(c => c.id !== el.dataset.customerDelete);
         await this.saveCustomers();
         await window.tagSystem.refreshCustomers();
@@ -185,11 +187,11 @@ class CustomerManager {
           </button>
           <div class="cd-avatar-lg">${initials}</div>
           <div class="cd-info">
-            <h2>${customer.name}</h2>
-            <p>${customer.contact || ''}</p>
+            <h2>${escapeHtml(customer.name)}</h2>
+            <p>${escapeHtml(customer.contact || '')}</p>
             <div class="cd-contact-row">
-              ${customer.email ? `<span>📧 ${customer.email}</span>` : ''}
-              ${customer.phone ? `<span>📞 ${customer.phone}</span>` : ''}
+              ${customer.email ? `<span>📧 ${escapeHtml(customer.email)}</span>` : ''}
+              ${customer.phone ? `<span>📞 ${escapeHtml(customer.phone)}</span>` : ''}
             </div>
           </div>
           <button class="btn-secondary" id="btn-cd-edit">Düzenle</button>
@@ -202,7 +204,7 @@ class CustomerManager {
             <button class="btn-secondary btn-sm" id="btn-cd-edit-keynotes">Düzenle</button>
           </div>
           <div class="cd-keynotes-content" id="cd-keynotes-display">
-            ${customer.keyNotes ? customer.keyNotes.replace(/\n/g, '<br>') : '<span style="color:var(--text-tertiary)">Anlaşma fiyatları, draft tarifeler, önemli bilgiler buraya yazılabilir...</span>'}
+            ${customer.keyNotes ? escapeHtml(customer.keyNotes).replace(/\n/g, '<br>') : '<span style="color:var(--text-tertiary)">Anlaşma fiyatları, draft tarifeler, önemli bilgiler buraya yazılabilir...</span>'}
           </div>
           <div class="cd-keynotes-edit hidden" id="cd-keynotes-editor">
             <textarea class="cd-keynotes-textarea" id="cd-keynotes-textarea" placeholder="Güncel anlaşma fiyatları, draft tarifeler, önemli bilgiler...">${customer.keyNotes || ''}</textarea>
@@ -245,10 +247,10 @@ class CustomerManager {
             <div class="cd-item">
               <div class="cd-item-header">
                 <span class="status-badge ${task.status}">${statusLabels[task.status] || task.status}</span>
-                <span class="cd-item-title">${task.title}</span>
+                <span class="cd-item-title">${escapeHtml(task.title)}</span>
                 ${task.dueDate ? `<span class="cd-item-date">📅 ${this.formatDate(task.dueDate)}</span>` : ''}
               </div>
-              ${task.description ? `<p class="cd-item-preview">${task.description}</p>` : ''}
+              ${task.description ? `<p class="cd-item-preview">${escapeHtml(task.description)}</p>` : ''}
             </div>
           `).join('')}
         </div>
@@ -259,10 +261,10 @@ class CustomerManager {
             <div class="cd-item">
               <div class="cd-item-header">
                 <span class="status-badge ${lead.status}">${statusLabels[lead.status] || lead.status}</span>
-                <span class="cd-item-title">${lead.origin || '—'} → ${lead.destination || '—'}</span>
-                <span class="cd-item-date">${lead.price ? '$' + lead.price : ''} ${lead.weight ? lead.weight + ' kg' : ''}</span>
+                <span class="cd-item-title">${escapeHtml(lead.origin || '—')} → ${escapeHtml(lead.destination || '—')}</span>
+                <span class="cd-item-date">${lead.price ? '$' + escapeHtml(String(lead.price)) : ''} ${lead.weight ? escapeHtml(String(lead.weight)) + ' kg' : ''}</span>
               </div>
-              <p class="cd-item-preview">${lead.cargoType || ''} ${lead.notes ? '• ' + lead.notes.substring(0, 80) : ''}</p>
+              <p class="cd-item-preview">${escapeHtml(lead.cargoType || '')} ${lead.notes ? '• ' + escapeHtml(lead.notes.substring(0, 80)) : ''}</p>
             </div>
           `).join('')}
         </div>
@@ -341,25 +343,25 @@ class CustomerManager {
       <div class="modal-body">
         <div class="form-group">
           <label>${window.i18n.t('company_name')}</label>
-          <input type="text" id="cust-input-name" value="${existing?.name || ''}" placeholder="${window.i18n.t('company_name')}">
+          <input type="text" id="cust-input-name" value="${escapeHtml(existing?.name || '')}" placeholder="${window.i18n.t('company_name')}">
         </div>
         <div class="form-group">
           <label>${window.i18n.t('contact_person')}</label>
-          <input type="text" id="cust-input-contact" value="${existing?.contact || ''}" placeholder="${window.i18n.t('contact_person')}">
+          <input type="text" id="cust-input-contact" value="${escapeHtml(existing?.contact || '')}" placeholder="${window.i18n.t('contact_person')}">
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>${window.i18n.t('email')}</label>
-            <input type="email" id="cust-input-email" value="${existing?.email || ''}" placeholder="email@example.com">
+            <input type="email" id="cust-input-email" value="${escapeHtml(existing?.email || '')}" placeholder="email@example.com">
           </div>
           <div class="form-group">
             <label>${window.i18n.t('phone')}</label>
-            <input type="tel" id="cust-input-phone" value="${existing?.phone || ''}" placeholder="+90 555 000 0000">
+            <input type="tel" id="cust-input-phone" value="${escapeHtml(existing?.phone || '')}" placeholder="+90 555 000 0000">
           </div>
         </div>
         <div class="form-group">
           <label>${window.i18n.t('customer_note')}</label>
-          <textarea class="input-lg" id="cust-input-note" placeholder="${window.i18n.t('customer_note')}">${existing?.note || ''}</textarea>
+          <textarea class="input-lg" id="cust-input-note" placeholder="${window.i18n.t('customer_note')}">${escapeHtml(existing?.note || '')}</textarea>
         </div>
       </div>
       <div class="modal-footer">

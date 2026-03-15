@@ -129,8 +129,12 @@ function setupIPC() {
       ]
     });
     if (result.canceled) return null;
-    fs.writeFileSync(result.filePath, content, 'utf-8');
-    return { filePath: result.filePath };
+    try {
+      fs.writeFileSync(result.filePath, content, 'utf-8');
+      return { filePath: result.filePath };
+    } catch (err) {
+      return { error: err.message };
+    }
   });
 
   ipcMain.handle('folder-open', async () => {
@@ -230,9 +234,11 @@ function setupIPC() {
     new Notification({ title, body }).show();
   });
 
-  // Shell
+  // Shell — only allow http/https to prevent file:// and custom protocol abuse
   ipcMain.on('open-external', (event, url) => {
-    shell.openExternal(url);
+    if (typeof url === 'string' && (url.startsWith('https://') || url.startsWith('http://'))) {
+      shell.openExternal(url);
+    }
   });
 
   // Get data path

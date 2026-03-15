@@ -104,7 +104,7 @@ class SettingsManager {
       const name = nameInput.value.trim();
       if (!name) return;
 
-      const id = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const id = window.dataStore.generateId();
       if (!this.settings.categories) this.settings.categories = [];
       this.settings.categories.push({ id, name, color: colorInput.value });
       

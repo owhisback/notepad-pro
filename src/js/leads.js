@@ -78,16 +78,16 @@ class LeadManager {
         return `
           <div class="lead-card" data-lead-id="${lead.id}">
             <div class="lead-customer">
-              <div class="lead-customer-name">${customer?.name || '—'}</div>
-              <div class="lead-customer-contact">${customer?.contact || ''}</div>
+              <div class="lead-customer-name">${escapeHtml(customer?.name || '—')}</div>
+              <div class="lead-customer-contact">${escapeHtml(customer?.contact || '')}</div>
             </div>
             <div class="lead-route">
-              <span>${lead.origin || '—'}</span>
+              <span>${escapeHtml(lead.origin || '—')}</span>
               <span class="arrow">→</span>
-              <span>${lead.destination || '—'}</span>
+              <span>${escapeHtml(lead.destination || '—')}</span>
             </div>
-            <div class="lead-cargo">${lead.cargoType || ''} ${lead.weight ? lead.weight + ' kg' : ''}</div>
-            <div class="lead-price">${lead.price ? '$' + lead.price : '—'}</div>
+            <div class="lead-cargo">${escapeHtml(lead.cargoType || '')} ${lead.weight ? escapeHtml(String(lead.weight)) + ' kg' : ''}</div>
+            <div class="lead-price">${lead.price ? '$' + escapeHtml(String(lead.price)) : '—'}</div>
             <div class="lead-date">${this.formatDate(lead.createdAt)}</div>
             <div class="lead-status">
               <span class="status-badge ${lead.status}">${statusLabels[lead.status] || lead.status}</span>
@@ -120,7 +120,8 @@ class LeadManager {
     container.querySelectorAll('[data-lead-delete]').forEach(el => {
       el.addEventListener('click', async (e) => {
         e.stopPropagation();
-        if (!confirm('Bu lead\'i silmek istediğinize emin misiniz?')) return;
+        const lead = this.leads.find(l => l.id === el.dataset.leadDelete);
+        if (!await showConfirm('Bu lead\'i silmek istediğinize emin misiniz?', lead?.origin ? `${lead.origin} → ${lead.destination}` : null)) return;
         this.leads = this.leads.filter(l => l.id !== el.dataset.leadDelete);
         await this.saveLeads();
         this.render();
@@ -147,27 +148,27 @@ class LeadManager {
         <div class="form-row">
           <div class="form-group">
             <label>${window.i18n.t('origin')}</label>
-            <input type="text" id="lead-input-origin" value="${existing?.origin || ''}" placeholder="IST">
+            <input type="text" id="lead-input-origin" value="${escapeHtml(existing?.origin || '')}" placeholder="IST">
           </div>
           <div class="form-group">
             <label>${window.i18n.t('destination')}</label>
-            <input type="text" id="lead-input-dest" value="${existing?.destination || ''}" placeholder="JFK">
+            <input type="text" id="lead-input-dest" value="${escapeHtml(existing?.destination || '')}" placeholder="JFK">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>${window.i18n.t('cargo_type')}</label>
-            <input type="text" id="lead-input-cargotype" value="${existing?.cargoType || ''}" placeholder="General Cargo">
+            <input type="text" id="lead-input-cargotype" value="${escapeHtml(existing?.cargoType || '')}" placeholder="General Cargo">
           </div>
           <div class="form-group">
             <label>${window.i18n.t('weight')}</label>
-            <input type="number" id="lead-input-weight" value="${existing?.weight || ''}" placeholder="1000">
+            <input type="number" id="lead-input-weight" value="${escapeHtml(String(existing?.weight || ''))}" placeholder="1000">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>${window.i18n.t('price')}</label>
-            <input type="text" id="lead-input-price" value="${existing?.price || ''}" placeholder="2.50">
+            <input type="text" id="lead-input-price" value="${escapeHtml(String(existing?.price || ''))}" placeholder="2.50">
           </div>
           <div class="form-group">
             <label>${window.i18n.t('status')}</label>
@@ -182,7 +183,7 @@ class LeadManager {
         </div>
         <div class="form-group">
           <label>${window.i18n.t('notes')}</label>
-          <textarea class="input-lg" id="lead-input-notes" placeholder="${window.i18n.t('notes')}">${existing?.notes || ''}</textarea>
+          <textarea class="input-lg" id="lead-input-notes" placeholder="${window.i18n.t('notes')}">${escapeHtml(existing?.notes || '')}</textarea>
         </div>
       </div>
       <div class="modal-footer">
