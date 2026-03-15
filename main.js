@@ -31,7 +31,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false
     },
-    icon: path.join(__dirname, 'src', 'icon.png')
+    // icon: path.join(__dirname, 'src', 'icon.png') // BUG 9: file doesn't exist
   });
 
   mainWindow.loadFile(path.join(__dirname, 'src', 'index.html'));
@@ -64,6 +64,10 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
+  if (reminderInterval) {
+    clearInterval(reminderInterval);
+    reminderInterval = null;
+  }
   if (process.platform !== 'darwin') app.quit();
 });
 
@@ -85,14 +89,25 @@ function setupIPC() {
     const result = await dialog.showOpenDialog(mainWindow, {
       properties: ['openFile'],
       filters: [
-        { name: 'All Files', extensions: ['*'] },
-        { name: 'Text Files', extensions: ['txt', 'md', 'json', 'js', 'css', 'html', 'py', 'xml', 'csv'] }
+        { name: 'Text Files', extensions: ['txt', 'md', 'json', 'js', 'css', 'html', 'py', 'xml', 'csv', 'ts', 'jsx', 'tsx', 'yaml', 'yml', 'sql', 'sh', 'bat', 'log', 'ini', 'cfg', 'env'] },
+        { name: 'All Files', extensions: ['*'] }
       ]
     });
     if (result.canceled) return null;
     const filePath = result.filePaths[0];
-    const content = fs.readFileSync(filePath, 'utf-8');
-    return { filePath, content };
+    
+    // BUG 8: Check file size (skip files > 10MB)
+    const stats = fs.statSync(filePath);
+    if (stats.size > 10 * 1024 * 1024) {
+      return { error: 'Dosya çok büyük (>10MB)' };
+    }
+    
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      return { filePath, content };
+    } catch (err) {
+      return { error: err.message };
+    }
   });
 
   ipcMain.handle('file-save', async (event, { filePath, content }) => {

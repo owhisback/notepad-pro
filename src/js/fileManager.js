@@ -145,3 +145,12 @@ function showToast(message, type = 'info') {
 
 window.fileManager = new FileManager();
 window.showToast = showToast;
+
+// XSS escape helper (BUG 6)
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+window.escapeHtml = escapeHtml;

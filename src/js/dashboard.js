@@ -46,9 +46,9 @@ class DashboardManager {
     // Upcoming reminders
     const upcomingReminders = reminders.filter(r => {
       if (r.completed) return false;
-      const d = new Date(r.datetime);
+      const d = new Date(r.nextDue || r.dueDate);
       return d >= now && d <= new Date(now.getTime() + 48 * 60 * 60 * 1000);
-    }).sort((a, b) => new Date(a.datetime) - new Date(b.datetime)).slice(0, 5);
+    }).sort((a, b) => new Date(a.nextDue || a.dueDate) - new Date(b.nextDue || b.dueDate)).slice(0, 5);
 
     // Active leads
     const activeLeads = leads.filter(l => !['won', 'lost'].includes(l.status));
@@ -142,7 +142,7 @@ class DashboardManager {
             ${upcomingReminders.length === 0 ? '<p class="dash-empty">Yakın hatırlatma yok</p>' :
               upcomingReminders.map(r => `
                 <div class="dash-reminder-item">
-                  <span class="dash-reminder-time">${this.formatTime(r.datetime)}</span>
+                  <span class="dash-reminder-time">${this.formatTime(r.nextDue || r.dueDate)}</span>
                   <span class="dash-reminder-title">${r.title}</span>
                 </div>
               `).join('')}

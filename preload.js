@@ -30,11 +30,13 @@ contextBridge.exposeInMainWorld('api', {
 
   // Menu events
   onMenuEvent: (channel, callback) => {
+    ipcRenderer.removeAllListeners(channel);
     ipcRenderer.on(channel, callback);
   },
 
   // Reminder checker
   onCheckReminders: (callback) => {
+    ipcRenderer.removeAllListeners('check-reminders');
     ipcRenderer.on('check-reminders', callback);
   }
 });

@@ -120,6 +120,7 @@ class LeadManager {
     container.querySelectorAll('[data-lead-delete]').forEach(el => {
       el.addEventListener('click', async (e) => {
         e.stopPropagation();
+        if (!confirm('Bu lead\'i silmek istediğinize emin misiniz?')) return;
         this.leads = this.leads.filter(l => l.id !== el.dataset.leadDelete);
         await this.saveLeads();
         this.render();

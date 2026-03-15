@@ -361,6 +361,22 @@ class NotesManager {
     return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
   }
 
+  // Extract @mentions from content and return customer IDs
+  extractMentions(content) {
+    if (!content) return [];
+    const mentions = [];
+    const regex = /@([\w\sçğıöşüÇĞİÖŞÜ]+)/g;
+    let match;
+    while ((match = regex.exec(content)) !== null) {
+      const name = match[1].trim();
+      const customer = window.tagSystem?.customers?.find(c => c.name.toLowerCase() === name.toLowerCase());
+      if (customer) {
+        mentions.push(customer.id);
+      }
+    }
+    return [...new Set(mentions)];
+  }
+
   // Parse /commands from content
   parseSlashCommands(content) {
     const commands = [];
