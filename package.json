@@ -1,0 +1,18 @@
+{
+  "name": "notepad-pro",
+  "version": "1.0.0",
+  "description": "Premium masaüstü not defteri, iş takip ve mini CRM uygulaması",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  },
+  "author": "Notepad Pro",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0"
+  },
+  "dependencies": {
+    "marked": "^11.0.0"
+  }
+}

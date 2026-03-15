@@ -1,0 +1,104 @@
+/* ═══════════════════════════════════════════════════ 
+   NOTEPAD PRO — THEME SYSTEM
+   CSS Variables for Dark & Light themes
+   ═══════════════════════════════════════════════════ */
+
+:root {
+  /* Shared */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.25);
+  --shadow-glow: 0 0 20px rgba(108, 92, 231, 0.3);
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+
+  /* Accent colors */
+  --accent-primary: #6c5ce7;
+  --accent-primary-hover: #7c6df7;
+  --accent-secondary: #00b894;
+  --accent-warning: #fdcb6e;
+  --accent-danger: #e17055;
+  --accent-info: #74b9ff;
+  
+  /* Status colors */
+  --status-new: #74b9ff;
+  --status-quoted: #fdcb6e;
+  --status-pending: #ffa502;
+  --status-won: #00b894;
+  --status-lost: #e17055;
+  --status-todo: #74b9ff;
+  --status-in-progress: #fdcb6e;
+  --status-done: #00b894;
+
+  /* Priority */
+  --priority-high: #e17055;
+  --priority-medium: #fdcb6e;
+  --priority-low: #00b894;
+}
+
+/* ── DARK THEME ── */
+[data-theme="dark"] {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a25;
+  --bg-elevated: #22222f;
+  --bg-hover: #2a2a38;
+  --bg-active: #32324a;
+  --bg-glass: rgba(18, 18, 26, 0.85);
+  --bg-glass-hover: rgba(26, 26, 37, 0.9);
+  
+  --border-primary: rgba(255, 255, 255, 0.06);
+  --border-secondary: rgba(255, 255, 255, 0.1);
+  --border-accent: rgba(108, 92, 231, 0.3);
+  
+  --text-primary: #e8e8ed;
+  --text-secondary: #9a9aaf;
+  --text-tertiary: #6a6a7f;
+  --text-inverse: #0a0a0f;
+  
+  --scrollbar-track: #12121a;
+  --scrollbar-thumb: #2a2a38;
+  --scrollbar-thumb-hover: #3a3a4f;
+  
+  --titlebar-bg: #08080d;
+  --statusbar-bg: #08080d;
+  --nav-bg: #0e0e14;
+  --sidebar-bg: #10101a;
+}
+
+/* ── LIGHT THEME ── */
+[data-theme="light"] {
+  --bg-primary: #f5f5fa;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #eeeef5;
+  --bg-elevated: #ffffff;
+  --bg-hover: #e8e8f0;
+  --bg-active: #dddde8;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --bg-glass-hover: rgba(245, 245, 250, 0.9);
+  
+  --border-primary: rgba(0, 0, 0, 0.06);
+  --border-secondary: rgba(0, 0, 0, 0.1);
+  --border-accent: rgba(108, 92, 231, 0.3);
+  
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5a7a;
+  --text-tertiary: #8a8aa0;
+  --text-inverse: #ffffff;
+  
+  --scrollbar-track: #eeeef5;
+  --scrollbar-thumb: #ccccdd;
+  --scrollbar-thumb-hover: #aaaacc;
+  
+  --titlebar-bg: #eaeaf2;
+  --statusbar-bg: #eaeaf2;
+  --nav-bg: #f0f0f8;
+  --sidebar-bg: #f2f2fa;
+}

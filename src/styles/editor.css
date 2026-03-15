@@ -1,0 +1,57 @@
+/* Editor styles */
+#editor-container .monaco-editor {
+  padding-top: 4px;
+}
+
+/* ═══ CUSTOM MENTION POPUP ═══ */
+.mention-popup {
+  position: fixed;
+  z-index: 9999;
+  min-width: 240px;
+  max-width: 360px;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 4px;
+  animation: slideUp 0.15s ease;
+}
+.mention-popup.hidden {
+  display: none !important;
+}
+
+.mention-popup-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.08s ease;
+  font-size: 13px;
+}
+.mention-popup-item:hover,
+.mention-popup-item.active {
+  background: var(--bg-active);
+}
+.mention-popup-item.active {
+  outline: 1px solid var(--accent-primary);
+}
+
+.pop-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.pop-label {
+  color: var(--text-primary);
+  font-weight: 500;
+  flex: 1;
+}
+.pop-detail {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-left: auto;
+  flex-shrink: 0;
+}
